@@ -1,15 +1,15 @@
 name: Oracle Cloud Autocreate
 on:
   schedule:
-    - cron: '*/5 * * * *' # Se ejecuta cada 5 minutos
-  workflow_dispatch: # Permite ejecutarlo a mano para probar
+    - cron: '*/10 * * * *' # Se ejecuta cada 10 minutos automáticamente
+  workflow_dispatch: # Botón para que tú lo inicies manualmente cuando quieras
 
 jobs:
   launch-instance:
     runs-on: ubuntu-latest
     steps:
       - name: Setup OCI CLI
-        uses: oracle-actions/setup-oci-cli@v1
+        uses: oracle-actions/setup-oci@v1
         with:
           user_ocid: ${{ secrets.OCI_USER_OCID }}
           tenancy_ocid: ${{ secrets.OCI_TENANCY_OCID }}
@@ -20,10 +20,11 @@ jobs:
       - name: Attempt to Create Instance
         run: |
           oci compute instance launch \
-          --availability-domain ${{ secrets.OCI_AD }} \
-          --compartment-id ${{ secrets.OCI_COMPARTMENT_ID }} \
+          --availability-domain "${{ secrets.OCI_AD }}" \
+          --compartment-id "${{ secrets.OCI_COMPARTMENT_ID }}" \
           --shape VM.Standard.A1.Flex \
           --shape-config '{"ocpus":4,"memoryInGBs":24}' \
-          --image-id ${{ secrets.OCI_IMAGE_ID }} \
-          --subnet-id ${{ secrets.OCI_SUBNET_ID }} \
+          --image-id "${{ secrets.OCI_IMAGE_ID }}" \
+          --subnet-id "${{ secrets.OCI_SUBNET_ID }}" \
           --assign-public-ip true
+
