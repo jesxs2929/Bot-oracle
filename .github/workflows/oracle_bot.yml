@@ -23,9 +23,10 @@ jobs:
           echo "tenancy=${{ secrets.OCI_TENANCY_OCID }}" >> ~/.oci/config
           echo "region=${{ secrets.OCI_REGION }}" >> ~/.oci/config
           echo "key_file=~/.oci/key.pem" >> ~/.oci/config
-          echo "${{ secrets.OCI_API_KEY }}" > ~/.oci/config_key.pem
-          # Limpiar posibles espacios o formatos de la llave
-          tr -d '\r' < ~/.config_key.pem > ~/.oci/key.pem
+          echo "${{ secrets.OCI_API_KEY }}" > ~/.oci/key.pem
+          # Esto limpia el formato de la llave para que Oracle la acepte
+          tr -d '\r' < ~/.oci/key.pem > ~/.oci/key_fixed.pem
+          mv ~/.oci/key_fixed.pem ~/.oci/key.pem
           chmod 600 ~/.oci/key.pem
 
       - name: Attempt to Create Instance
